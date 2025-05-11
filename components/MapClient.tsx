@@ -15,6 +15,18 @@ import { Feature } from 'ol';
 import { Geometry } from 'ol/geom';
 import { GeoJSON } from 'ol/format';
 
+// Implement throttle function to avoid dependency on lodash
+const throttle = (func: Function, delay: number) => {
+  let timeout: NodeJS.Timeout | null = null;
+  return (...args: any[]) => {
+    if (timeout) return;
+    timeout = setTimeout(() => {
+      func(...args);
+      timeout = null;
+    }, delay);
+  };
+};
+
 export default function MapClient() {
   const mapRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -149,10 +161,12 @@ export default function MapClient() {
 
     map.on('singleclick', (evt) => handleFeatureInfo(evt, 'click'));
 
-    map.on('pointermove', (evt) => {
+    const throttledPointerMove = throttle((evt: any) => {
       if (evt.dragging) return;
       handleFeatureInfo(evt, 'hover');
-    });
+    }, 200);  // Adjust the throttle delay as needed
+
+    map.on('pointermove', throttledPointerMove);
 
     return () => {
       map.setTarget(undefined);
@@ -180,11 +194,7 @@ export default function MapClient() {
             pointerEvents: interactionType === 'click' ? 'auto' : 'none',
           }}
         >
-          {/* <strong>Info Fitur</strong> */}
           <div style={{ marginTop: '8px', fontSize: '14px' }}>
-            {/* <p><strong>KELURAHAN:</strong> {featureInfo.WADMKD ?? '-'}</p>
-            <p><strong>KECAMATAN:</strong> {featureInfo.WADMKC ?? '-'}</p>
-            <p><strong>KABUPATEN:</strong> {featureInfo.WADMKK ?? '-'}</p> */}
             <p><strong>{featureInfo.WADMKD ?? '-'}</strong></p>
             <p><strong>{featureInfo.WADMKC ?? '-'}</strong></p>
             <p><strong>{featureInfo.WADMKK ?? '-'}</strong></p>
