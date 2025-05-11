@@ -1,0 +1,40 @@
+/* components/MenuBar.module.css */
+
+.menuBar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.menuButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.menuButton span {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.menuButton:hover {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.menuButton:focus {
+  outline: none;
+}
